@@ -2,7 +2,7 @@ export const data = [
   {
     latin: "A",
     ender: "⏃",
-    phonetic: "mm"
+    phonetic: "mm",
   },
   {
     latin: "B",
