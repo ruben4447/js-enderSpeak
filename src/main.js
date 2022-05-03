@@ -5,6 +5,23 @@ function main() {
   const iEnderScript = document.getElementById("ender-script");
   const iEnderPhonetic = document.getElementById("ender-phonetic");
 
+  // Play english audio
+  let playEnglishBtn = document.createElement("button");
+  playEnglishBtn.innerHTML = "&#128266;";
+  playEnglishBtn.addEventListener("click", () => {
+    playEnglishBtn.disabled = true;
+    let voice = new SpeechSynthesisUtterance();
+    voice.lang = "en-GB";
+    voice.text = iEnglish.value.trim();
+    speechSynthesis.speak(voice);
+    voice.onend = () => {
+      playEnglishBtn.disabled = false;
+      speechSynthesis.cancel();
+    };
+  });
+  iEnglish.insertAdjacentElement("afterend", playEnglishBtn);
+  playEnglishBtn.insertAdjacentHTML("beforebegin", "<br/>");
+
   iEnglish.addEventListener("input", () => {
     let english = iEnglish.value.trim();
     let { ender, phonetic } = englishToEnder(english);
