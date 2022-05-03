@@ -27,6 +27,7 @@ function main() {
   });
 
   let p = document.createElement("p");
+  p.style.fontWeight = "bold";
   p.innerText = data.map(obj => obj.ender).join("");
   iEnderScript.insertAdjacentElement("afterend", p);
 }
