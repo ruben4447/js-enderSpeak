@@ -1,4 +1,4 @@
-import { data, englishToEnder, enderScriptToEnglish, enderPhoneticToEnglish } from "./translate.js";
+import { data, englishToEnder, enderScriptToEnglish, enderPhoneticToEnglish, playAudioData, loadSounds } from "./translate.js";
 
 function main() {
   const iEnglish = document.getElementById("english");
@@ -26,10 +26,32 @@ function main() {
     iEnderScript.value = ender;
   });
 
+  // Show alphabet in *bold*
   let p = document.createElement("p");
   p.style.fontWeight = "bold";
   p.innerText = data.map(obj => obj.ender).join("");
   iEnderScript.insertAdjacentElement("afterend", p);
+
+  // Option to play each audio sound
+  let table = document.querySelector("table");
+  table.createTHead().children[0].insertAdjacentHTML("beforeend", "<th/>");
+  for (let tr of table.querySelectorAll("tbody > tr")) {
+    let idx = tr.children[0].innerText.charCodeAt(0) - 65;
+    let td = document.createElement("td");
+    let btn = document.createElement("button");
+    btn.innerHTML = "&#128266;";
+    btn.addEventListener("click", async () => {
+      let audio = data[idx].audio;
+      btn.disabled = true;
+      await playAudioData(audio);
+      btn.disabled = false;
+    });
+    td.appendChild(btn);
+    tr.appendChild(td);
+  }
+
+  // Load audio
+  loadSounds();
 }
 
 window.addEventListener("load", main);

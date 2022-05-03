@@ -133,6 +133,7 @@ export const data = [
 
 export const vowelStart = ["H", "J", "K", "L", "M", "O", "P", "U"];
 export const vowelEnd = ["B", "H", "I", "J", "K", "L", "M", "O", "P", "U", "Y"];
+let glottalPause = 130, actx, gain;
 
 /** Return true if glottal stop required between two characters (latin given) */
 export function reqGlottal(c1, c2) {
@@ -216,4 +217,32 @@ export function enderPhoneticToEnglish(phonetic) {
     phonetic += curr;
   }
   return { english, ender };
+}
+
+/** Load sounds */
+export async function loadSounds() {
+  actx = new AudioContext();
+  gain = actx.createGain();
+  gain.connect(actx.destination);
+  for (const obj of data) {
+    let mp3 = await fetch("sound/" + obj.latin + ".mp3");
+    let buf = await mp3.arrayBuffer();
+    let audio = await actx.decodeAudioData(buf);
+    obj.audio = audio;
+  }
+}
+
+/** Play a snippet of audio data */
+export function playAudioData(audioData, startTime = 0) {
+  let src = actx.createBufferSource();
+  src.buffer = audioData;
+  src.connect(gain);
+  src.start(startTime);
+  return new Promise(res => {
+    src.onended = () => {
+      src.stop();
+      src.disconnect();
+      res();
+    };
+  });
 }
